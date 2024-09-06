@@ -1,0 +1,253 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.row {
+  display: flex;
+  gap: 5px;
+}
+.key:active {
+  background-color: #eee;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.key.wide {
+  width: 80px;
+}
+
+.key.space {
+  min-width: 250px;
+}
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  background-color: #ccc;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  width:100%;
+  max-width:600px;
+}
+
+.row {
+  display: flex;
+  gap: 5px;
+}
+
+.key {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+
+.word-space{
+  width:60px;
+  height:60px;
+ background-color: #ddd;
+ border-radius: 5px;
+ box-shadow: inset 0 2px 4px rgba(20, 20, 20, 0.2);
+display:flex;
+justify-content: center;
+align-items: center;
+font-size: 25px;
+font-weight: bold;
+
+}
+.words{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  
+}
+.container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  background-color: rgb(192, 192, 113);
+  gap:10px;
+  background:url(../public/assets/BG.png);
+  background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
+}
+.randomlyPick{
+  background-color: rgb(29, 24, 67);
+padding:5px 20px ;
+width: 150px;
+  text-align: center;
+  border: 2px solid rgb(249, 249, 243);
+  border-radius: 10px;
+}
+.display{
+  width:100%;
+}
+.menu{
+width:100%;
+height:100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+gap:10px;
+}
+.menu >div{
+  margin-top: auto;
+  margin-bottom: 70px;
+
+  width:350px;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap:10px;
+}
+.menu >div >div{
+  background: #faf8a0;
+  padding: 5px 10px ;
+  border-radius: 5px;
+  color: rgb(15, 15, 15);
+  font-size: 20px;
+  width: 100%;
+  max-width: 250px;
+  text-align: center;
+font-weight: bold;
+transition: all .5s linear;
+box-shadow: 1px 1px 5px rgb(85, 81, 81);
+}
+.loading{
+  min-width: 100%;
+  height: 100vh;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+.LetOneGuessScreen{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+}
+.hint{
+  color: rgb(251, 251, 251);
+  font-size: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap:5px;
+  background: #41403d;
+  border-radius: 5px;
+  padding: 20px 5px;
+  width:350px;
+  
+}
+.selection{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: ceneter;
+  gap:5px;
+  background: #23221e;
+  border-radius: 5px;
+  padding: 20px 20px;
+  width:350px;
+  height: 200px;
+  color: #fff;
+
+}
+.selection p{
+  font-size: 25px;
+}
+.sendWord{
+  margin-left: auto;
+}
+.selection input[type=button]{
+padding:5px 10px;
+border-radius: 5px;
+margin-right:auto;
+}
+.hint input{
+padding:5px 30px;
+border-radius: 5px;
+outline: none;
+}
+.inputs{
+  display: flex ;
+  gap:10px;
+
+}
+.animatedHint{
+  width:150px;
+  height: 70px;
+  position: relative;
+}
+.hintText{
+  font-size: 1.5rem;
+  position: absolute;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+.defaultHint{
+  font-size: 20px;
+  letter-spacing: 2px;
+  padding: 0px 10px;
+}
+.hintContainer{
+width:100%;
+display: flex;
+align-items: center;
+max-width: 600px;
+
+}
+.sendWord{
+  padding: 10px;
+  background-color: rgb(60, 54, 54);
+  border-radius: 5px;
+}
+.animate{
+  animation: animatedHint 9s 1 linear ;
+
+}
+@keyframes  animatedHint {
+  0%,100%{
+    opacity: 0;
+    top:0;
+  }
+5%{
+    opacity: 1;
+    top:60%;
+  }
+  99%{
+    opacity: 0;
+    top:60%;
+  }
+  
+  
+}
+.controls{
+  display: flex;
+}
