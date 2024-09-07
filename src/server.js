@@ -2,7 +2,7 @@ import express from 'express'
 import { createServer } from 'node:http';
  import {Server} from 'socket.io'
 import cors from 'cors'
-const port = 5000;
+const port = process.env.PORT || 5000;
 const app = express();
 app.use(cors());
 const server = createServer(app)
