@@ -50,7 +50,8 @@ io.on('connection', (socket) => {
       // add them to activeGame Objcet
       activeInGame[roomID]=[playerOne,playerTwo];
       //notify them that they are both connected in a same room
-      io.to(roomID).emit("matched",roomID);  
+      io.to(roomID).emit("matched",roomID);
+      
     }
     else{
       // Notify client if no waiting players for loading screen
@@ -60,7 +61,7 @@ io.on('connection', (socket) => {
     socket.on("massage",(data)=>{
       //data[1] is roomID came from client
      //data[0] is user massage text
-       io.to(data[1]).emit("getMassage",data[0]);
+       io.to(data[1]).emit("keyPressed",data[0]);
      })   
   socket.on('hint',(data)=>{
     io.to(data[1]).emit("getHint",data[0]);
@@ -83,6 +84,23 @@ io.on('connection', (socket) => {
               }  
             })
   }); 
+
+
+  function timer(){
+    let i=1;
+    let intervelID=''
+    return ()=>{
+    return intervelID= setInterval(()=>{
+i++
+
+
+      },1000)
+    }
+  }
+
+  const t =timer();
+  console.log(t)
+  
 server.listen(port,()=>{
   console.log("server is running at 5000 port")
 })

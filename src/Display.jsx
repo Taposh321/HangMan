@@ -5,7 +5,7 @@ export default function Display(){
  const {value,setValue,socket}= useContext(context);
  const [selectedWord,setSelectedWord]= useState('')
 useEffect(()=>{
-socket.on("getMassage",(data)=>{
+socket.on("keyPressed",(data)=>{
 setValue((pre)=>pre+data)
 })
 socket.on("wordSelected",(data)=>{

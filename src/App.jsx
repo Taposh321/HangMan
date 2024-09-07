@@ -206,7 +206,8 @@ const animals = [
  { word: "Slug", hint: "Shell-less mollusk similar to a snail" },
  { word: "Worm", hint: "Small, soft-bodied invertebrate" }
 ]
-const bothArray=[countries,animals]
+const bothArray=[countries,animals];
+
 function LoadingScreen(){
   return(<>
   <div className='loading'>
@@ -252,26 +253,31 @@ socket.on("wordSelected",(data)=>{
   },[])
 
   return(<>
-  <div
-   class='hintContainer'>
+  
+
+    {/* // wordSelected==""? <div className='timer'>Opponent will choose word in 10 seconds</div>: */}
+  
+
+  <div className='hintContainer'>
     <div className="defaultHint">Hint: {wordSelected!=''? wordSelected.hint:""}</div>
   <div className='animatedHint'>
     <div  className={`hintText ${animate?"animate":""} `}>
     {h}
-
     </div>
     </div>
   </div>
-
      <Display />
      <Keyboard />
      <div>Request for a hint</div>
+
+
+ 
   </>)
 }
 function LetOneGuessScreen(){
    //input handler
   const [value,setValue]= useState('');
-   const [sw,setSw]=useState('');
+   const [sw,setSw]=useState('No word picked');
 
    const sendHint=()=>{
    socket.emit("hint",[value,roomID])
@@ -281,6 +287,7 @@ function LetOneGuessScreen(){
     if(sw!=""){
       socket.emit("word",[sw,roomID]);
     }
+
    }
 
    const pick=()=>{
@@ -300,17 +307,16 @@ setSw(picked);
     <Display />
 
 <div className="selection">
-  <p>Select Word </p>
-  
-<div>
+<div>Select Word </div>
+<div  className='selectWord' >
   <div className='selectedWord'>{sw.word}</div>
   <div onClick={pick} className='randomlyPick'>
-  Randomly pick
+  Shuffle
   </div>
 </div>
 
 <div onClick={sendWord} className='sendWord'>
-send Word
+Challange this word!
 </div>
 </div>
 

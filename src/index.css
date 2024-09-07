@@ -88,14 +88,7 @@ font-weight: bold;
 background-repeat: no-repeat;
 background-size: cover;
 }
-.randomlyPick{
-  background-color: rgb(29, 24, 67);
-padding:5px 20px ;
-width: 150px;
-  text-align: center;
-  border: 2px solid rgb(249, 249, 243);
-  border-radius: 10px;
-}
+
 .display{
   width:100%;
 }
@@ -179,11 +172,27 @@ box-shadow: 1px 1px 5px rgb(85, 81, 81);
   color: #fff;
 
 }
-.selection p{
-  font-size: 25px;
+.selectedWord{
+  font-size: 20px;
+  text-align: center;
+  flex: 1;
 }
+.randomlyPick{
+  padding:5px 10px ;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.selectWord{
+  display: flex;
+align-items: center;
+gap:10px;
+padding:20px;
+justify-content: space-between;  
+}
+
 .sendWord{
-  margin-left: auto;
+  text-align: center;
 }
 .selection input[type=button]{
 padding:5px 10px;
@@ -223,6 +232,7 @@ align-items: center;
 max-width: 600px;
 
 }
+
 .sendWord{
   padding: 10px;
   background-color: rgb(60, 54, 54);
