@@ -9,7 +9,9 @@ import cors from 'cors'
 const port = process.env.PORT || 5000;
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin:'https://hangman-o3z4.onrender.com'
+}));
 
 const __fileName= fileURLToPath(import.meta.url);
 
@@ -27,7 +29,8 @@ const server = createServer(app)
 const io = new Server(server,{
     cors:{
     origin:"https://hangman-o3z4.onrender.com:5173"
-    }
+    },
+    method:["GET","POST"]
 });
 
 let waitingPlayerToGuess=[];
