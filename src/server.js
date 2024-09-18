@@ -1,22 +1,31 @@
 import express from 'express'
+import path from 'path'
+import { fileURLToPath } from 'url';
+
+
 import { createServer } from 'node:http';
  import {Server} from 'socket.io'
 import cors from 'cors'
 const port = process.env.PORT || 5000;
 const app = express();
+
 app.use(cors());
 
-const server = createServer(app)
+const __fileName= fileURLToPath(import.meta.url);
+const __dirname=path.dirname(__fileName)
+//serve static files from react
+ app.use(express.static(path.join(__dirname,'dist')));
 
+ app.get('*',(req,res)=>{
+  res.sendFile(path.join(__dirname,"dist",'index.html'))
+})
+const server = createServer(app)
 const io = new Server(server,{
     cors:{
     origin:"http://localhost:5173"
     }
 });
 
-app.get('*',(req,res)=>{
-  console.log("Hello")
-})
 let waitingPlayerToGuess=[];
 let type=''
 const activeInGame={};
