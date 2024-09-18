@@ -1,8 +1,6 @@
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url';
-
-
 import { createServer } from 'node:http';
  import {Server} from 'socket.io'
 import cors from 'cors'
@@ -14,7 +12,6 @@ app.use(cors({
 }));
 
 const __fileName= fileURLToPath(import.meta.url);
-
 const __dirname=path.dirname(__fileName)
 const distPath= path.resolve(__dirname,'../dist')
 console.log(distPath)
@@ -28,11 +25,10 @@ console.log(distPath)
 const server = createServer(app)
 const io = new Server(server,{
     cors:{
-    origin:"https://hangman-o3z4.onrender.com:5173"
+    origin:"https://hangman-o3z4.onrender.com"
     },
     method:["GET","POST"]
 });
-
 let waitingPlayerToGuess=[];
 let type=''
 const activeInGame={};
@@ -103,16 +99,7 @@ io.on('connection', (socket) => {
               }  
             })
   }); 
-  function timer(){
-    let i=1;
-    let intervelID=''
-    return ()=>{
-    return intervelID= setInterval(()=>{
-i++
-      },1000)
-    }
-  }
-  const t =timer();
+
   
 server.listen(port,()=>{
   console.log("server is running at 5000 port")
