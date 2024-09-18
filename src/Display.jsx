@@ -35,9 +35,7 @@ export default function Display({wordFlipAble}) {
         setTimeout(()=>{reset()},2000)
          return 0;
       }
-      // If the current index is flipped, skip processing for this index
-    
-
+     
       if (index < selectedWord.word.length-1  && data.trim().toLowerCase() === selectedWord.word[index]?.trim().toLowerCase()) {
         setValue((prev) => prev + data);
 

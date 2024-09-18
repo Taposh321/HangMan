@@ -7,12 +7,16 @@ const app = express();
 app.use(cors());
 
 const server = createServer(app)
+
 const io = new Server(server,{
     cors:{
     origin:"http://localhost:5173"
     }
 });
 
+app.get('*',(req,res)=>{
+  console.log("Hello")
+})
 let waitingPlayerToGuess=[];
 let type=''
 const activeInGame={};

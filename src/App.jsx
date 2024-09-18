@@ -207,7 +207,6 @@ const animals = [
  { word: "Worm", hint: "Small, soft-bodied invertebrate" }
 ]
 const bothArray=[countries,animals];
-
 function LoadingScreen({text}){
   return(<>
   <div className='loading'>
@@ -217,7 +216,6 @@ function LoadingScreen({text}){
   </div>
   </>)
  }
-
  function Home(){
   const {playSound,sound,setSound} =useContext(Context)
   const connect=()=>{
@@ -227,7 +225,6 @@ function LoadingScreen({text}){
     if (socket) {
        // Check if socket instance is defined
       socket.connect(); // Connect to the server
-
     } 
 }
 
