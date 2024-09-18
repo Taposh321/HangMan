@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "nodemon ./server/server.js"
+    "start": "nodemon ./src/server.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.6.0",
