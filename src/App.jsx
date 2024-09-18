@@ -1,13 +1,14 @@
-import { useState,useEffect,useRef, useContext } from 'react'
+import { useState,useEffect, useContext } from 'react'
 import { io } from 'socket.io-client';
-
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import {  faHeart} from '@fortawesome/free-solid-svg-icons';
+import { HashLoader } from 'react-spinners';
 import Context from './context'
 import Keyboard from './keyboard'
 import Display from './Display'
 
 const SOCKET_SERVER_URL = 'http://localhost:5000'
 const socket = io(SOCKET_SERVER_URL, { autoConnect: false });
-let type=''
 let roomID=''
 const countries = [
   { word: "Argentina", hint: "Counrty Name" },
@@ -112,7 +113,6 @@ const countries = [
   { word: "Brunei", hint: "Counrty Name" },
   { word: "Burundi", hint: "Counrty Name" },
 ];
-
 const animals = [
  { word: "Lion", hint: "Large carnivorous feline known as the 'King of the Jungle'" },
  { word: "Tiger", hint: "Large striped feline found in Asia" },
@@ -208,131 +208,272 @@ const animals = [
 ]
 const bothArray=[countries,animals];
 
-function LoadingScreen(){
+function LoadingScreen({text}){
   return(<>
   <div className='loading'>
-   Waiting for Opponent...
+    <div>  {text}
+</div>
+   <HashLoader color='white' />
   </div>
-  
   </>)
  }
 
- function MenuScreen(){
-  const connect=(token)=>{
-    if (socket) { // Check if socket instance is defined
-      socket.auth={token}
+ function Home(){
+  const {playSound,sound,setSound} =useContext(Context)
+  const connect=()=>{
+    if(sound){
+      playSound(2).play();
+    }
+    if (socket) {
+       // Check if socket instance is defined
       socket.connect(); // Connect to the server
-        type=token   
+
     } 
 }
 
+const soundHandler=()=>{
+  if(!sound) playSound(2).play()
+sound?setSound(false):setSound(true);
+}
+
+useEffect(()=>{
+  // playSound(1).play();
+return ()=>{
+}
+},[])
+  return(<>
+  {
+
+  <div className='menu'>
+    <div className='menuWrapper'>
+      <div className='quickPlay menuBtn' onClick={()=>{connect()}}>Quick Play</div>
+      <div className='playWithComputer menuBtn'>Play with computer</div>
+      <div onClick={soundHandler} className='createRoom menuBtn'>{sound?"Sound on":"Sound off"} </div>
+ </div>
+
+<div className='repoLink'>
+{/* Github repository link -<FontAwesomeIcon icon={faGithub} size='xl'  />  */}
+ </div>
+</div>}
+  </>)
+ }
+ function MenuScreen({setmode}){
+  const [time,setTime]=useState(5)
+  const [intervalID,setIntervalID]=useState();
+  const select=(x)=>{
+   socket.emit('modeSelect',[roomID,x,socket.id])
+   setmode(false);
+  }
+
+  useEffect(()=>{
+    let timerID=setInterval(()=>{ 
+
+       setTime((pre)=>{
+         if(pre==1){
+           socket.emit('modeSelect',[roomID,"letGuess",socket.id])
+           clearInterval(timerID)
+           setmode(false)
+           return pre
+         }
+         return pre-1
+       })
+     },1000);
+
+   setIntervalID(timerID);
+
+ return ()=>{
+   clearInterval(intervalID);
+ }
+},[])
+
 return(<> 
-   <div className='menu'>
-    <div>
-    <div onClick={ ()=>{connect("guess")}}>Guess word (Online)</div>
-    <div onClick={()=>{connect("letGuess")}}>Let other Guess (Online)</div>
-    <div onClick={()=>{connect("computer")}}>Play with computer</div>
-    </div>
+   <div className='popUpSelectMode'>
+    <div className='timer'>{time}s</div>
+    <div onClick={ ()=>{select("guess")}}>Guess</div>
+    <div onClick={()=>{select("letGuess")}}>Pick word</div>
    </div>
 </>)
 }  
-function GuessScreen(){
-  const [h,setH]=useState('');
-  const [animate,setAnimate]=useState(false)
- const [wordSelected,setWordSelected]=useState('');
+function Game(){
+  const [gameScene,setGameScene]= useState(null) 
+  const [mode,setMode]=useState(true);
+  const{chooserID,lifes,correctGuess} =useContext(Context)
   useEffect(()=>{
-socket.on("getHint",(data)=>{
+    socket.on("getSelectedMode",(data)=>{
+      if(socket.id==data[2] ){
+       if(data[1]=="guess"){
+         setGameScene(<GuessScreen />)
+       }else{
+         setGameScene(<LetOneGuessScreen />)
+       }
+      }else{
+       if(data[1]=='guess'){
+         setGameScene(<LetOneGuessScreen />)
+       }else{
+         setGameScene(<GuessScreen />)
+       } 
+      } 
+   })
+   
+     },[])
+
+  return(<>
+  <div className='game'>
+    <div className='gameWrapper itemOne'>
+    <div className='userContainer'>
+      <div className='socreBored'> 
+        <div className='score'>Score</div>
+       <div className='myScore'>Corrected Guess: {correctGuess}</div>
+     <div className='opponentScore'>Opponent Guess:</div>
+    </div>
+   
+    <div className="timesRemaining">
+    
+       {
+       Array(6).fill(null).map((_,i)=>{
+        if(i<lifes){
+         return <span key={i} className='time' style={{background:'red'}}>  </span>
+        }else{
+          return <span key={i} className='time'> </span>
+
+        }
+       }
+       )
+       }
+      </div>
+  
+    </div>
+    <div className='hanManContainer'>
+   
+      <div className='hangingBodyContainer'>
+      </div>
+    </div>
+    </div>
+    <div className='itemTwo'>
+
+    {
+      chooserID==socket.id && mode==true ?<MenuScreen setmode={setMode} />:''
+    }
+    {
+      gameScene
+    }
+    </div>
+  </div>
+
+  </>)
+}
+function GuessScreen(){
+  const {selectedWord,totalFlipAble,playSound} =useContext(Context)
+  const [h,setH]=useState('');
+  const [animate,setAnimate]=useState(false);
+  
+  useEffect(()=>{
+   socket.on("getHint",(data)=>{
   setH(data);
   setAnimate(true);
   setTimeout(() => setAnimate(false), 9000); 
 })
-
-socket.on("wordSelected",(data)=>{
-  setWordSelected(data)
+socket.on('wordSelected',()=>{
+ playSound(3).play()
 })
-  },[])
+},[])
 
   return(<>
   
-
-    {/* // wordSelected==""? <div className='timer'>Opponent will choose word in 10 seconds</div>: */}
-  
-
-  <div className='hintContainer'>
-    <div className="defaultHint">Hint: {wordSelected!=''? wordSelected.hint:""}</div>
+<div className='guessContainer'>
+  {
+    <div className='keyboard-display'>
+    <div className='displayContainer'>
+    <div className='hintContainer'>
+      {
+        selectedWord.word?"":<div className='chooseWordIndication'>Opponent is choosing word</div>
+      }
+    <div className="defaultHint"> {selectedWord!=''?"Hint: " + selectedWord.hint:""}</div>
   <div className='animatedHint'>
     <div  className={`hintText ${animate?"animate":""} `}>
     {h}
     </div>
     </div>
   </div>
-     <Display />
-     <Keyboard />
-     <div>Request for a hint</div>
-
-
+      <Display wordFlipAble={true} />
+      <div > {selectedWord? ( 'Flips : '+totalFlipAble ):''}</div>
+   </div>
+    <Keyboard />
+    </div>
+  }
+ 
+  </div>
  
   </>)
 }
+
 function LetOneGuessScreen(){
+  const {playSound,readOnly,setReadOnly,disabled,setDisabled,setSelectedWord,selectedWord}=useContext(Context)
    //input handler
-  const [value,setValue]= useState('');
-   const [sw,setSw]=useState('No word picked');
-
-   const sendHint=()=>{
-   socket.emit("hint",[value,roomID])
+  const [sw,setSw]=useState('');
+  const sendHint=(v)=>{
+   socket.emit("hint",[v,roomID])
     }
-
    const sendWord=()=>{
+
     if(sw!=""){
+
+      setReadOnly(true);
+      setDisabled(true)
       socket.emit("word",[sw,roomID]);
+    //Update parent setSelectedWord state from this component for context
     }
-
    }
-
    const pick=()=>{
+    playSound(5).play()
 let randomNumber=Math.floor(Math.random() * (2 - 0) + 0);
 let selectedArray=bothArray[randomNumber];
 let randomPicker=Math.floor(Math.random() * (selectedArray.length - 0) + 0);
 let picked=selectedArray[randomPicker];
-setSw(picked);
+  setSw(picked);
    }
-
-  const handler =(e)=>{
-  setValue(e.target.value)
-  }
-
+ 
   return (<>
    <div className='LetOneGuessScreen'>
-    <Display />
-
+    <div className='displayContainer'>
+      <div className='displayAverter'>
+        <div className='status'>{selectedWord.word?"":'Opponent is waiting for challenge'}</div>
+      </div>
+  <Display wordFlipAble={false} />
+    </div>
+<div className='selectionContainer'>
 <div className="selection">
 <div>Select Word </div>
 <div  className='selectWord' >
-  <div className='selectedWord'>{sw.word}</div>
-  <div onClick={pick} className='randomlyPick'>
+  <div style={{fontSize:'13px',display:'flex',justifyContent:'center',alignItems:'center'}}>{sw!="" ? '':'No word selected'}</div>
+  <div className='selectedWord'>{sw!="" ? sw.word:''}</div>
+  <button onClick={pick} disabled={disabled} className='randomlyPick'>
   Shuffle
-  </div>
+  </button>
 </div>
-
-<div onClick={sendWord} className='sendWord'>
-Challange this word!
+<button onClick={sendWord} className={`sendWord ${readOnly==true?'readOnly':''}`} disabled={readOnly}>
+Challenge this word!
+</button>
 </div>
-</div>
-
-
   <div className='controls'> 
-    <div></div>
     <div className='hint'>
-      <div style={{marginRight:"auto",marginLeft:"20px"}} >Give  opponent a hint</div>
+      <div>Quick massages</div>
      
       <div className='inputs'>
-        <input type="text" value={value}  onChange={handler} name="" id="hint" placeholder='Max 15 characters' maxLength={15} />
-      <input type="button" value="Send" onClick={sendHint}/> 
+        <span onClick={()=>{sendHint('Play Fast please')}}>Play Fast please</span>
+        <span onClick={()=>{sendHint('Hello')}}>Hello</span>
+        <span onClick={()=>{sendHint('hi')}}>Hi</span>
+        <span onClick={()=>{sendHint('Easy word')}}>Easy word</span>
+        <span onClick={()=>{sendHint( 'Not Easy')}}>Not Easy</span>
+        <span onClick={()=>{sendHint('cool!')}}>cool!</span>
+        <span onClick={()=>{sendHint('Great job')}}>Great job</span>
+        <span onClick={()=>{sendHint('Thank you')}}>Thank you</span>
+        <span onClick={()=>{sendHint('My pleasure')}}>My pleasure</span>
+
       </div>
   </div>
   </div>
- 
+  </div>
   </div>
   </>)
 }
@@ -340,25 +481,68 @@ Challange this word!
 function App() {
   const [value,setValue]= useState('');
   const [scene,setScene]=useState(null);
-  const [selectedWord,setSelectedWord]=useState('')
-  useEffect(() => {
-     socket.on("matched",(room_id)=>{
-       roomID=room_id;
-       if(type=="guess"){
-            setScene(<GuessScreen />);
-          }
-         if(type=='letGuess'){
-          setScene(<LetOneGuessScreen/>);
-        }   
-       });
+  const [selectedWord,setSelectedWord]=useState('');
+  const [wrong,setWrong]=useState([]);
+  const [lifes,setLifes]=useState(0);
+  const [correctGuess,setCorrectGuess]=useState(0);
+  const [readOnly,setReadOnly]=useState(false)
+  const [disabled,setDisabled]=useState(false)
+  const [chooserID,setChooserID]=useState('');
+  const [totalFlipAble,setTotalFlipAble]=useState(0);
+  const [sound,setSound]=useState(true)
+  const [loading, setLoading] = useState(true);
+  const [audioFiles, setAudioFiles] = useState([
+    './assets/sound/click.wav',
+    './assets/sound/background.mp3',
+    './assets/sound/click2.mp3',
+     './assets/sound/wordSelected.mp3',
+     './assets/sound/wrong.wav',
+      './assets/sound/suffle.mp3',
+      './assets/sound/correctGuess.mp3'
+  ]);
+  const [audioRefs, setAudioRefs] = useState([]);
 
-       socket.on("waitingForOpponet",()=>{
-         setScene(<LoadingScreen />)
+  useEffect(() => {
+    const loadAudioFiles = async () => {
+      const audioPromises = audioFiles.map((file) => {
+        return new Promise((resolve) => {
+          const audio = new Audio(file);
+          audio.oncanplaythrough = () => resolve(audio);
+          audio.volume=.5
+          audio.onerror = () => resolve(null); // Handle error gracefully
+        });
       });
-       socket.on("opponent_disconnect",()=>{
+      const loadedAudios = await Promise.all(audioPromises);
+      setAudioRefs(loadedAudios);
+      setLoading(false);
+    };
+
+    loadAudioFiles();
+
+  }, [audioFiles]);
+
+ const playSound = (index) => {
+    if (audioRefs[index]) {
+       return audioRefs[index];
+    }
+  }
+
+  useEffect(() => {
+     socket.on("matched",(data)=>{
+       roomID=data[0];
+       setChooserID(data[1])
+       setScene(<Game  />); 
+     });
+    socket.on("waitingForOpponet",()=>{
+         setScene(<LoadingScreen text={"Waiting for Opponent"} />)
+      });
+    socket.on("opponent_disconnect",()=>{
         alert("Opponent disconnected")
        })
-
+       socket.on("wordSelected",(data)=>{
+        setTotalFlipAble(data[1])
+        setSelectedWord(data[0]);
+      })
     return () => {
       socket.disconnect();
     };
@@ -366,13 +550,16 @@ function App() {
   
   return (
     <>
-      <Context.Provider value={{value,setValue,socket,roomID,countries,animals,selectedWord,setSelectedWord}}>
-         <div className='container'>
-       {
-      scene ? scene : <MenuScreen />      
-       }
-             
-         </div>
+      <Context.Provider value={{sound,setSound,playSound,totalFlipAble,setTotalFlipAble,chooserID,lifes,setLifes,readOnly,setReadOnly,disabled,setDisabled,correctGuess,setCorrectGuess,wrong,setWrong,value,setValue,socket,roomID,countries,animals,selectedWord,setSelectedWord,scene,setScene}}>
+        {
+          loading? <LoadingScreen text={'Loading assets'} />:  <div className='container'>
+          {
+         scene ? scene : <Home />      
+          }
+                
+            </div>
+        }
+       
       </Context.Provider>
     </>
   )

@@ -26,10 +26,8 @@
   gap: 10px;
   justify-content: center;
   align-items: center;
-  background-color: #ccc;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   width:100%;
   max-width:600px;
 }
@@ -43,8 +41,8 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -54,10 +52,9 @@
   user-select: none;
 }
 
-
 .word-space{
-  width:60px;
-  height:60px;
+  width:20px;
+  height:25px;
  background-color: #ddd;
  border-radius: 5px;
  box-shadow: inset 0 2px 4px rgba(20, 20, 20, 0.2);
@@ -68,11 +65,17 @@ font-size: 25px;
 font-weight: bold;
 
 }
+.wrongWord{
+  background-color: rgb(225, 66, 66);
+  color: #fff;
+}
 .words{
   display: flex;
-  gap: 10px;
+  gap: 5px;
   justify-content: center;
-  
+  max-width: 500px;
+  width: 100%;
+  flex-wrap: wrap; 
 }
 .container{
   display: flex;
@@ -81,9 +84,7 @@ font-weight: bold;
   align-items: center;
   width: 100%;
   height: 100vh;
-  background-color: rgb(192, 192, 113);
-  gap:10px;
-  background:url(../public/assets/BG.png);
+  background-color: rgb(161, 146, 146);
   background-position: center;
 background-repeat: no-repeat;
 background-size: cover;
@@ -91,7 +92,19 @@ background-size: cover;
 
 .display{
   width:100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+.guessContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+  margin-bottom: 20px;
+  height:100%;
+}
+
 .menu{
 width:100%;
 height:100vh;
@@ -99,41 +112,51 @@ display: flex;
 justify-content: center;
 align-items: center;
 flex-direction: column;
-gap:10px;
-}
-.menu >div{
-  margin-top: auto;
-  margin-bottom: 70px;
+background: url(../assets/menu2.png);
+background-position: center left;
+background-repeat: no-repeat;
+background-size:cover;
 
-  width:350px;
+}
+.menuWrapper{
 display: flex;
 flex-direction: column;
-align-items: center;
 gap:10px;
+margin-top: auto;
+margin-bottom: 90px;
 }
-.menu >div >div{
-  background: #faf8a0;
-  padding: 5px 10px ;
-  border-radius: 5px;
-  color: rgb(15, 15, 15);
-  font-size: 20px;
+.menuWrapper {
+padding:20px;
+color: white;
+text-align: center;
+border-radius: 5px;
+font-weight: 600;
+font-size: 2rem;
+cursor: pointer;
+}
+.repoLink{
   width: 100%;
-  max-width: 250px;
-  text-align: center;
-font-weight: bold;
-transition: all .5s linear;
-box-shadow: 1px 1px 5px rgb(85, 81, 81);
-}
-.loading{
-  min-width: 100%;
-  height: 100vh;
-  background-color: black;
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
+  gap:10px;
+  padding:20px;
+}
+
+
+.loading{
+  min-width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap:20px;
   color: white;
-  font-size: 20px;
+  font-size: 15px;
   font-weight: bold;
+  background-color: #1d1b15;
 }
 .LetOneGuessScreen{
   width: 100%;
@@ -141,41 +164,33 @@ box-shadow: 1px 1px 5px rgb(85, 81, 81);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 60px;
+  justify-content: end;
+  gap: 10px;
+  padding-bottom: 20px;
 }
-.hint{
-  color: rgb(251, 251, 251);
-  font-size: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap:5px;
-  background: #41403d;
-  border-radius: 5px;
-  padding: 20px 5px;
-  width:350px;
-  
-}
+
 .selection{
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: ceneter;
-  gap:5px;
+  gap:20px;
   background: #23221e;
   border-radius: 5px;
-  padding: 20px 20px;
-  width:350px;
-  height: 200px;
+  width:250px;
+  height: 180px;
+  padding: 10px;
   color: #fff;
-
+}
+.selectionContainer{
+display:flex ;
+justify-content: center;
+align-items: center;
+gap: 10px;
 }
 .selectedWord{
   font-size: 20px;
-  text-align: center;
   flex: 1;
+
 }
 .randomlyPick{
   padding:5px 10px ;
@@ -186,9 +201,9 @@ box-shadow: 1px 1px 5px rgb(85, 81, 81);
 .selectWord{
   display: flex;
 align-items: center;
-gap:10px;
-padding:20px;
-justify-content: space-between;  
+gap:0px;
+width: 100%;
+
 }
 
 .sendWord{
@@ -199,6 +214,21 @@ padding:5px 10px;
 border-radius: 5px;
 margin-right:auto;
 }
+.controls{
+  display: flex;
+}
+.hint{
+  color: rgb(251, 251, 251);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap:20px;
+  align-items: center;
+  background: #1d1b15;
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 13px;
+}
 .hint input{
 padding:5px 30px;
 border-radius: 5px;
@@ -206,36 +236,38 @@ outline: none;
 }
 .inputs{
   display: flex ;
-  gap:10px;
-
+  flex-wrap: wrap;
+ gap:10px;
+ max-width: 200px;
+}
+.inputs span{
+  background-color: orange;
+  padding:2px 4px ;
+  border-radius: 3px;
 }
 .animatedHint{
   width:150px;
-  height: 70px;
   position: relative;
 }
 .hintText{
-  font-size: 1.5rem;
+  font-size: 1rem;
   position: absolute;
   opacity: 0;
   animation-fill-mode: forwards;
 }
 .defaultHint{
-  font-size: 20px;
+  font-size: 13px;
   letter-spacing: 2px;
   padding: 0px 10px;
 }
 .hintContainer{
 width:100%;
-display: flex;
-align-items: center;
-max-width: 600px;
 
 }
 
 .sendWord{
   padding: 10px;
-  background-color: rgb(60, 54, 54);
+  background-color: rgb(221, 210, 210);
   border-radius: 5px;
 }
 .animate{
@@ -258,6 +290,189 @@ max-width: 600px;
   
   
 }
-.controls{
+
+.game{
+  width:100%;
+  height: 100%;
+  background:  radial-gradient(circle at center,rgb(204, 150, 12) 50%,rgba(35, 32, 32, 0.672));
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0px 10px;
+
+}
+.popUpSelectMode{
+background-color: #fff;
+width:100%;
+max-width: 300px;
+height: 150px;
+border-radius: 5px;
+box-shadow: 2px 3px 5px rgb(112, 108, 108);
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
+ gap: 10px;
+ font-size: 15px;
+ padding: 10px;
+
+}
+.popUpSelectMode div:nth-child(2),.popUpSelectMode div:nth-child(3){
+background-color: rgb(249, 161, 10);
+width: 90%;
+color:#fff;
+width:200px;
+padding: 5px;
+text-align: center;
+border-radius: 5px;
+font-size: 1rem;
+
+}
+.gameWrapper{
+  padding-top: 20px;
+  width: 100%;
+  display: flex;
+  
+}
+.itemTwo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  width: 100%;
+  height: 100%;
+}
+.userContainer{
+  width:100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap:100px;
+}
+.user{
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  gap:10px;
+  color: rgb(74, 70, 70);
+  letter-spacing: 1px;
+  word-spacing: 2px;
+  gap:10px;
+  font-size: 13px;
+}
+.name,.location,.badge{
+  background-color: rgb(255, 255, 255);
+  padding: 5px 10px;
+  border-radius: 50px;
+  text-align: center;
+
+}
+
+.opponentAverter,.averter{
+width: 80px;
+height: 80px;
+border-radius: 50%;
+background-color: #eee;
+border: 3px solid white;
+
+}
+.exit{
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  color: red;
+  font-size: 20px;
+  cursor: pointer;
+}
+.keyboard-display{
+  display: flex;
+  flex-direction: column;
+  gap:10px;
+}
+.displayContainer{
+  background-color: rgb(255, 255, 255);
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-radius: 5px;
+  gap:5px;
+
+}
+.displayAverter{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.readOnly{
+  opacity: .5;
+}
+.hanManContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  
+}
+.timesRemaining{
+  display: flex;
+  gap: 4px;
+}
+.time{
+  border-radius: 5px;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgb(68, 61, 61);
+  background-color: #4c4c4c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.hangingBodyContainer{
+background-color: rgb(78, 69, 69);
+display: flex;
+justify-content: center;
+}
+.hangMan{
+  width: 200px;
+  height:200px;
+  background-image: url('../public/assets/hangMan.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.score{
+  font-size: 15px;
+  font-weight: bold;
+}
+.socreBored{
+  background: #f4efef;
+  width: 200px;
+  border-radius: 5px;
+  padding: 5px 10px;
+  display: flex ;
+  flex-direction:column;
+  gap:3px;
+  font-size: 13px;
+  font-weight: bold;
+  color:orange;
+}
+.chooseWordIndication{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ font-weight: bold;
+  color: orange;
+}
+.flipedWord{
+  color: rgb(165, 160, 160);
 }

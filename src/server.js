@@ -5,54 +5,37 @@ import cors from 'cors'
 const port = process.env.PORT || 5000;
 const app = express();
 app.use(cors());
+
 const server = createServer(app)
 const io = new Server(server,{
     cors:{
-    origin:"https://hang-man-word-guessing-game.onrender.com/"
+    origin:"http://localhost:5173"
     }
 });
+
 let waitingPlayerToGuess=[];
-let waitingPlayerToLetOneGuess=[];
 let type=''
 const activeInGame={};
 io.on('connection', (socket) => {
- if(socket.handshake.auth.token=="guess"){
+  
   waitingPlayerToGuess.push(socket.id)
- }else if(socket.handshake.auth.token=="letGuess"){
-  waitingPlayerToLetOneGuess.push(socket.id)
- }else{
   //Play with computer
- }
-    if(waitingPlayerToLetOneGuess.length>=1 &&   socket.handshake.auth.token == "guess"){
+ 
+    if(waitingPlayerToGuess.length>=2){
       //remove two users from waiting list;
         const playerOne=socket.id;
         const index= waitingPlayerToGuess.indexOf(playerOne)
         waitingPlayerToGuess.splice(index,1);
-        const playerTwo=waitingPlayerToLetOneGuess.shift();
+        const playerTwo=waitingPlayerToGuess.shift();
         //Create unique room id for two users
         const roomID=playerOne+playerTwo;
         io.to(playerOne).socketsJoin(roomID);
         io.to(playerTwo).socketsJoin(roomID);
         activeInGame[roomID]=[playerOne,playerTwo];
-        io.to(roomID).emit("matched",roomID); 
-
-    }else if(waitingPlayerToGuess.length>=1 &&  socket.handshake.auth.token == "letGuess"){
-       //remove  current user from waiting list
-       const playerOne=socket.id;
-      const index= waitingPlayerToLetOneGuess.indexOf(playerOne)
-      waitingPlayerToLetOneGuess.splice(index,1); 
-     const playerTwo=waitingPlayerToGuess.shift();  
-     //Create unique room id for two users
-      const roomID=playerOne+playerTwo;
-      //Creating unique room for two users
-      io.to(playerOne).socketsJoin(roomID);
-      io.to(playerTwo).socketsJoin(roomID);
-      // add them to activeGame Objcet
-      activeInGame[roomID]=[playerOne,playerTwo];
-      //notify them that they are both connected in a same room
-      io.to(roomID).emit("matched",roomID);
-      
-    }
+        let toChoose=Math.floor(Math.random() * (2 - 0) + 0);
+        let chooserID=activeInGame[roomID][toChoose]  
+        io.to(roomID).emit("matched",[roomID,chooserID]); 
+      }
     else{
       // Notify client if no waiting players for loading screen
         socket.emit("waitingForOpponet",true)
@@ -66,14 +49,30 @@ io.on('connection', (socket) => {
   socket.on('hint',(data)=>{
     io.to(data[1]).emit("getHint",data[0]);
   })
+
   socket.on('word',(data)=>{
-    io.to(data[1]).emit("wordSelected",data[0]);
+    let flipAble=1
+    if(data[0].word.length>=6 && data[0].word.length<=8 ){
+      flipAble=2
+    }else if(data[0].word.length>=9  ){
+      flipAble=3
+    }
+   
+    io.to(data[1]).emit("wordSelected",[data[0],flipAble]);
   })
+  socket.on("modeSelect",(data)=>{
+    io.to(data[0]).emit("getSelectedMode",data);
+  })
+  
       socket.on('disconnect',()=>{ 
-          // waitingPlayerToGuess= waitingPlayerToGuess.filter(item=> item !=socket.id)
+        if(waitingPlayerToGuess.includes(socket.id)){
+          const index= waitingPlayerToGuess.indexOf(socket.id)
+        waitingPlayerToGuess.splice(index,1);
+        }
               for(let roomID in activeInGame){
                 const players= activeInGame[roomID];
-                if(players.includes(socket.id)){
+                if(players.
+                  includes(socket.id)){
                     const opponent = players.find((item)=> item!=socket.id);
                     if(opponent){
                         io.to(opponent).emit("opponent_disconnect","Opponent disconnected")
@@ -92,14 +91,10 @@ io.on('connection', (socket) => {
     return ()=>{
     return intervelID= setInterval(()=>{
 i++
-
-
       },1000)
     }
   }
-
   const t =timer();
-  console.log(t)
   
 server.listen(port,()=>{
   console.log("server is running at 5000 port")
