@@ -7,7 +7,7 @@ import Context from './context'
 import Keyboard from './keyboard'
 import Display from './Display'
 
-const SOCKET_SERVER_URL = 'http://hangman-o3z4.onrender.com:5000'
+const SOCKET_SERVER_URL = 'https://hangman-o3z4.onrender.com:5000'
 const socket = io(SOCKET_SERVER_URL, { autoConnect: false });
 let roomID=''
 const countries = [
