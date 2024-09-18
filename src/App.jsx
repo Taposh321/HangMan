@@ -223,7 +223,6 @@ function LoadingScreen({text}){
       playSound(2).play();
     }
     if (socket) {
-       // Check if socket instance is defined
       socket.connect(); // Connect to the server
     } 
 }

@@ -14,7 +14,6 @@ app.use(cors({
 const __fileName= fileURLToPath(import.meta.url);
 const __dirname=path.dirname(__fileName)
 const distPath= path.resolve(__dirname,'../dist')
-console.log(distPath)
 
 //serve static files from react
  app.use(express.static(distPath));
@@ -26,11 +25,9 @@ const server = createServer(app)
 const io = new Server(server,{
     cors:{
     origin:"https://hangman-o3z4.onrender.com"
-    },
-    method:["GET","POST"]
+    }
 });
 let waitingPlayerToGuess=[];
-let type=''
 const activeInGame={};
 io.on('connection', (socket) => {
   
